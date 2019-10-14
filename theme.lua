@@ -9,26 +9,44 @@ local dpi = xresources.apply_dpi
 local gfs = require("gears.filesystem")
 local themes_path = gfs.get_themes_dir()
 
-local theme = {}
+local theme          = {}
 
-theme.font          = "sans 8"
+theme.font           = "Terminus 8"
 
-theme.bg_normal     = "#222222"
-theme.bg_focus      = "#535d6c"
-theme.bg_urgent     = "#ff0000"
-theme.bg_minimize   = "#444444"
-theme.bg_systray    = theme.bg_normal
+theme.bg_normal      = "#222222"
+theme.bg_focus       = "#535d6c"
+theme.bg_urgent      = "#ff0000"
+theme.bg_minimize    = "#444444"
+theme.bg_systray     = theme.bg_normal
 
-theme.fg_normal     = "#aaaaaa"
-theme.fg_focus      = "#ffffff"
-theme.fg_urgent     = "#ffffff"
-theme.fg_minimize   = "#ffffff"
+theme.fg_normal      = "#aaaaaa"
+theme.fg_focus       = "#ffffff"
+theme.fg_urgent      = "#ffffff"
+theme.fg_minimize    = "#ffffff"
 
-theme.useless_gap   = dpi(0)
-theme.border_width  = dpi(1)
-theme.border_normal = "#000000"
-theme.border_focus  = "#535d6c"
-theme.border_marked = "#91231c"
+theme.useless_gap    = dpi(0)
+theme.border_width   = dpi(1)
+theme.border_normal  = "#000000"
+theme.border_focus   = "#535d6c"
+theme.border_marked  = "#91231c"
+
+theme.panel_height   = 18
+
+theme.confdir        = os.getenv("HOME") .. "/.config/awesome/themes/multicolor"
+theme.widget_temp    = theme.confdir .. "/icons/temp.png"
+theme.widget_uptime  = theme.confdir .. "/icons/ac.png"
+theme.widget_cpu     = theme.confdir .. "/icons/cpu.png"
+theme.widget_weather = theme.confdir .. "/icons/dish.png"
+theme.widget_fs      = theme.confdir .. "/icons/fs.png"
+theme.widget_mem     = theme.confdir .. "/icons/mem.png"
+theme.widget_note    = theme.confdir .. "/icons/note.png"
+theme.widget_note_on = theme.confdir .. "/icons/note_on.png"
+theme.widget_netdown = theme.confdir .. "/icons/net_down.png"
+theme.widget_netup   = theme.confdir .. "/icons/net_up.png"
+theme.widget_mail    = theme.confdir .. "/icons/mail.png"
+theme.widget_batt    = theme.confdir .. "/icons/bat.png"
+theme.widget_clock   = theme.confdir .. "/icons/clock.png"
+theme.widget_vol     = theme.confdir .. "/icons/spkr.png"
 
 -- There are other variable sets
 -- overriding the default one when

@@ -2,23 +2,24 @@
 -- found (e.g. lgi). If LuaRocks is not installed, do nothing.
 pcall(require, "luarocks.loader")
 
--- Standard awesome library
-local gears = require("gears")
-local awful = require("awful")
-require("awful.autofocus")
--- Widget and layout library
-local wibox = require("wibox")
--- Theme handling library
-local beautiful = require("beautiful")
--- Cool lib with cool stuff
-local lain = require("lain")
--- Notification library
-local naughty = require("naughty")
-local menubar = require("menubar")
-local hotkeys_popup = require("awful.hotkeys_popup")
--- Enable hotkeys help widget for VIM and other apps
--- when client with a matching name is opened:
+local gears         = require("gears")
+local awful         = require("awful")
+                      require("awful.autofocus")
+local wibox         = require("wibox")
+local beautiful     = require("beautiful")
+local naughty       = require("naughty")
+local menubar       = require("menubar")
+local lain          = require("lain")
+local freedesktop   = require("freedesktop")
+local hotkeys_popup = require("awful.hotkeys_popup").widget
+                      require("awful.hotkeys_popup.keys")
+local my_table      = awful.util.table or gears.table -- 4.{0,1} compatibility
+local dpi           = require("beautiful.xresources").apply_dpi
+
+local markup = lain.util.markup
+
 require("awful.hotkeys_popup.keys")
+
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -48,6 +49,7 @@ end
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init("/home/h3nnn4n/.config/awesome/theme.lua")
+--beautiful.init(string.format("%s/.config/awesome/themes/%s/theme.lua", os.getenv("HOME"), "mahboy"))
 
 -- This is used later as the default terminal and editor to run.
 terminal = "urxvt"
@@ -81,6 +83,60 @@ awful.layout.layouts = {
     -- awful.layout.suit.corner.se,
 }
 -- }}}
+
+-- Weather
+local weathericon = wibox.widget.imagebox(beautiful.widget_weather)
+local weather = lain.widget.weather({
+    city_id = 2643743, -- placeholder (London)
+    notification_preset = { font = "Terminus 10", fg = beautiful.fg_normal },
+    weather_na_markup = markup.fontfg(beautiful.font, "#eca4c4", "N/A "),
+    settings = function()
+        descr = weather_now["weather"][1]["description"]:lower()
+        units = math.floor(weather_now["main"]["temp"])
+        widget:set_markup(markup.fontfg(beautiful.font, "#eca4c4", descr .. " @ " .. units .. "°C "))
+    end
+})
+
+-- Net
+local netdownicon = wibox.widget.imagebox(beautiful.widget_netdown)
+local netdowninfo = wibox.widget.textbox()
+local netupicon = wibox.widget.imagebox(beautiful.widget_netup)
+local netupinfo = lain.widget.net({
+    settings = function()
+        if iface ~= "network off" and
+           string.match(weather.widget.text, "N/A")
+        then
+            weather.update()
+        end
+
+        widget:set_markup(markup.fontfg(beautiful.font, "#e54c62", net_now.sent .. " "))
+        netdowninfo:set_markup(markup.fontfg(beautiful.font, "#87af5f", net_now.received .. " "))
+    end
+})
+
+-- MEM
+local memicon = wibox.widget.imagebox(beautiful.widget_mem)
+local memory = lain.widget.mem({
+    settings = function()
+        widget:set_markup(markup.fontfg(beautiful.font, "#e0da37", mem_now.used .. "M "))
+    end
+})
+
+-- CPU
+local cpuicon = wibox.widget.imagebox(beautiful.widget_cpu)
+local cpu = lain.widget.cpu({
+    settings = function()
+        widget:set_markup(markup.fontfg(beautiful.font, "#e33a6e", cpu_now.usage .. "% "))
+    end
+})
+
+-- Coretemp
+local tempicon = wibox.widget.imagebox(beautiful.widget_temp)
+local temp = lain.widget.temp({
+    settings = function()
+        widget:set_markup(markup.fontfg(beautiful.font, "#f1af5f", coretemp_now .. "°C "))
+    end
+})
 
 -- {{{ Menu
 -- Create a launcher widget and a main menu
@@ -198,7 +254,7 @@ awful.screen.connect_for_each_screen(function(s)
     }
 
     -- Create the wibox
-    s.mywibox = awful.wibar({ position = "top", screen = s, height = 14 })
+    s.mywibox = awful.wibar({ position = "top", screen = s, height = beautiful.panel_height })
 
     -- Add widgets to the wibox
     s.mywibox:setup {
@@ -212,6 +268,14 @@ awful.screen.connect_for_each_screen(function(s)
         s.mytasklist, -- Middle widget
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
+            netdownicon,
+            netdowninfo,
+            netupicon,
+            netupinfo.widget,
+            memicon,
+            memory.widget,
+            cpuicon,
+            cpu.widget,
             mykeyboardlayout,
             wibox.widget.systray(),
             mytextclock,
@@ -223,9 +287,7 @@ end)
 
 -- {{{ Mouse bindings
 root.buttons(gears.table.join(
-    awful.button({ }, 3, function () mymainmenu:toggle() end),
-    awful.button({ }, 4, awful.tag.viewnext),
-    awful.button({ }, 5, awful.tag.viewprev)
+    awful.button({ }, 3, function () mymainmenu:toggle() end)
 ))
 -- }}}
 
