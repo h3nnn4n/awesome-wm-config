@@ -52,7 +52,9 @@ beautiful.init("/home/h3nnn4n/.config/awesome/theme.lua")
 --beautiful.init(string.format("%s/.config/awesome/themes/%s/theme.lua", os.getenv("HOME"), "mahboy"))
 
 -- This is used later as the default terminal and editor to run.
-terminal = "kitty"
+--terminal = "urxvt"
+--terminal = "kitty"
+terminal = "alacritty"
 editor = os.getenv("EDITOR") or "nano"
 editor_cmd = terminal .. " -e " .. editor
 
@@ -149,7 +151,8 @@ myawesomemenu = {
 }
 
 mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
-                                    { "open terminal", terminal }
+                                    { "open terminal", terminal },
+                                    { "firefox", "firefox" }
                                   }
                         })
 
