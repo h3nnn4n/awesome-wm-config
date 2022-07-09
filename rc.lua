@@ -153,7 +153,8 @@ myawesomemenu = {
 mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
                                     { "open terminal", terminal },
                                     { "firefox", "firefox" },
-                                    { "telegram", "telegram" }
+                                    { "telegram", "telegram" },
+                                    { "dlauncher", "dlauncher-toggle" }
                                   }
                         })
 
